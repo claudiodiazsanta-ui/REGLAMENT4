@@ -1,0 +1,431 @@
+<title>Simulacre Reglament FGC · Test 4</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap">
+<style>
+/* Concepte: quadre de comandament ferroviari. Blau de senyalització, verd/vermell/groc només per a l'estat. */
+:root {
+  --bg: #EDF0F5; --surface: #FFFFFF; --surface-2: #F4F6FA; --fg: #0F1B2D; --muted: #53607A; --line: #D3DAE6;
+  --accent: #0B3C7A; --accent-fg: #FFFFFF;
+  --ok: #14663A; --ok-bg: #DDF3E5; --bad: #A3261C; --bad-bg: #FBE3E0; --warn: #7A4F00; --warn-bg: #FFF0CC;
+  --f-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --f-body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0C1420; --surface: #141F30; --surface-2: #1A2740; --fg: #E7ECF5; --muted: #9AA8BF; --line: #26354D;
+    --accent: #7FB0FF; --accent-fg: #07182F;
+    --ok: #6FD39A; --ok-bg: #123325; --bad: #FF8A80; --bad-bg: #3A1815; --warn: #F2C14E; --warn-bg: #3A2D0A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0C1420; --surface: #141F30; --surface-2: #1A2740; --fg: #E7ECF5; --muted: #9AA8BF; --line: #26354D;
+  --accent: #7FB0FF; --accent-fg: #07182F;
+  --ok: #6FD39A; --ok-bg: #123325; --bad: #FF8A80; --bad-bg: #3A1815; --warn: #F2C14E; --warn-bg: #3A2D0A;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 16px; line-height: 1.5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+button { font: inherit; color: inherit; }
+.wrap { max-width: 760px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 16px 40px; }
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+.top-in { max-width: 760px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); }
+.brand { font-family: var(--f-display); font-weight: 700; font-size: 20px; letter-spacing: .02em; text-transform: uppercase; display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.brand small { font-family: var(--f-body); font-weight: 500; font-size: 12px; color: var(--muted); text-transform: none; letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tabs { display: flex; gap: 4px; }
+.tab { border: 1px solid var(--line); background: transparent; border-radius: 6px; padding: 6px 12px; font-weight: 600; font-size: 14px; cursor: pointer; min-height: 36px; }
+.tab[aria-selected="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 700; line-height: 1.1; margin: 0; text-wrap: balance; }
+h1 { font-size: 34px; text-transform: uppercase; letter-spacing: .01em; }
+h2 { font-size: 24px; }
+h3 { font-size: 19px; }
+.lead { color: var(--muted); margin: 8px 0 0; max-width: 62ch; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+[hidden] { display: none !important; }
+.stack { display: grid; gap: 16px; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.label { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.mode { display: block; position: relative; border: 2px solid var(--line); border-radius: 10px; padding: 12px 14px; cursor: pointer; background: var(--surface-2); }
+.mode input { position: absolute; opacity: 0; }
+.mode:has(input:checked) { border-color: var(--accent); background: var(--surface); }
+.mode:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
+.mode b { font-family: var(--f-display); font-size: 20px; display: block; }
+.mode span { color: var(--muted); font-size: 14px; }
+select, .btn, .chip { min-height: 44px; }
+select { width: 100%; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); border-radius: 8px; padding: 8px 10px; font: inherit; }
+.check { display: flex; gap: 10px; align-items: center; min-height: 44px; cursor: pointer; }
+.check input { width: 20px; height: 20px; accent-color: var(--accent); }
+.btn { border: 2px solid var(--accent); background: var(--accent); color: var(--accent-fg); border-radius: 8px; padding: 10px 18px; font-weight: 600; font-size: 16px; cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--fg); border-color: var(--line); }
+.btn.ghost:hover { border-color: var(--accent); }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn:focus-visible, .tab:focus-visible, .opt:focus-visible, .nav-n:focus-visible, .chip:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.grow { flex: 1 1 160px; }
+.progress { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.progress > i { display: block; height: 100%; background: var(--accent); transition: width .2s; }
+.q-meta { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.q-n { font-family: var(--f-display); font-size: 22px; font-weight: 700; }
+.q-text { font-size: 19px; font-weight: 500; line-height: 1.4; margin: 12px 0 14px; }
+.opts { display: grid; gap: 10px; }
+.opt { display: flex; gap: 12px; align-items: flex-start; text-align: left; width: 100%; background: var(--surface); border: 2px solid var(--line); border-radius: 10px; padding: 12px; min-height: 52px; cursor: pointer; }
+.opt-l { flex: none; width: 30px; height: 30px; border-radius: 6px; display: grid; place-items: center; background: var(--surface-2); border: 1px solid var(--line); font-family: var(--f-display); font-weight: 700; font-size: 17px; }
+.opt-t { min-width: 0; overflow-wrap: anywhere; padding-top: 2px; }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt.sel { border-color: var(--accent); background: var(--surface-2); }
+.opt.sel .opt-l { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.opt.ok { border-color: var(--ok); background: var(--ok-bg); }
+.opt.ok .opt-l { background: var(--ok); color: var(--surface); border-color: var(--ok); }
+.opt.bad { border-color: var(--bad); background: var(--bad-bg); }
+.opt.bad .opt-l { background: var(--bad); color: var(--surface); border-color: var(--bad); }
+.opt:disabled { cursor: default; color: var(--fg); }
+.fb { border-radius: 10px; padding: 14px; margin-top: 14px; border: 1px solid var(--line); background: var(--surface-2); }
+.fb.good { border-color: var(--ok); background: var(--ok-bg); }
+.fb.wrong { border-color: var(--bad); background: var(--bad-bg); }
+.fb p { margin: 6px 0 0; }
+.where { margin-top: 10px; font-size: 14px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 8px; }
+.where b { color: var(--fg); }
+.navgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 6px; }
+.nav-n { min-height: 38px; border: 1px solid var(--line); background: var(--surface); border-radius: 6px; font-weight: 600; cursor: pointer; font-variant-numeric: tabular-nums; }
+.nav-n.done { background: var(--surface-2); border-color: var(--accent); }
+.nav-n.ok { background: var(--ok-bg); border-color: var(--ok); }
+.nav-n.bad { background: var(--bad-bg); border-color: var(--bad); }
+.nav-n.cur { outline: 3px solid var(--accent); outline-offset: 1px; }
+.confirm { border: 2px solid var(--warn); background: var(--warn-bg); border-radius: 10px; padding: 14px; }
+.score { display: grid; gap: 12px; }
+.grade { font-family: var(--f-display); font-weight: 700; font-size: 72px; line-height: 1; font-variant-numeric: tabular-nums; }
+.grade small { font-size: 28px; color: var(--muted); }
+.pill { display: inline-block; font-weight: 700; font-size: 14px; letter-spacing: .06em; text-transform: uppercase; padding: 4px 12px; border-radius: 999px; }
+.pill.pass { background: var(--ok-bg); color: var(--ok); border: 1px solid var(--ok); }
+.pill.fail { background: var(--bad-bg); color: var(--bad); border: 1px solid var(--bad); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+.stat { background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.stat b { display: block; font-family: var(--f-display); font-size: 28px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.bars { display: grid; gap: 10px; }
+.bar-h { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+.bar { height: 10px; border-radius: 5px; background: var(--line); overflow: hidden; margin-top: 4px; }
+.bar > i { display: block; height: 100%; background: var(--ok); }
+.bar.low > i { background: var(--bad); }
+.bar.mid > i { background: var(--warn); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 14px; font-weight: 600; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.rev { display: grid; gap: 12px; }
+.rev-item { background: var(--surface); border: 1px solid var(--line); border-left: 6px solid var(--bad); border-radius: 10px; padding: 14px; }
+.rev-item.okk { border-left-color: var(--ok); }
+.rev-item.blk { border-left-color: var(--warn); }
+.rev-item .tag { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.rev-item .qt { font-weight: 600; margin: 4px 0 8px; }
+.ans { font-size: 15px; margin: 4px 0; overflow-wrap: anywhere; }
+.ans .yes { color: var(--ok); font-weight: 700; }
+.ans .no { color: var(--bad); font-weight: 700; }
+.note { font-size: 14px; color: var(--muted); }
+.note a { color: var(--accent); }
+.dev { display: grid; gap: 14px; }
+textarea { width: 100%; min-height: 120px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); color: var(--fg); padding: 10px; font: inherit; resize: vertical; }
+.model { margin-top: 12px; border-top: 1px dashed var(--line); padding-top: 10px; }
+.model ul { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 6px; }
+.dev-ref { font-size: 13px; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .progress > i { transition: none; } }
+@media (max-width: 480px) { h1 { font-size: 28px; } .grade { font-size: 60px; } .q-text { font-size: 18px; } }
+@media (max-width: 480px) { .brand small { display: none; } }
+</style>
+
+<header class="top"><div class="top-in">
+  <div class="brand">Reglament FGC <small>Simulacre 4 · Reglament de circulació</small></div>
+  <div class="tabs" role="tablist">
+    <button class="tab" id="tab-test" role="tab" aria-selected="true" type="button">Test</button>
+    <button class="tab" id="tab-dev" role="tab" aria-selected="false" type="button">Desenvolupament</button>
+  </div>
+</div></header>
+
+<main class="wrap">
+
+<section id="v-home" class="stack">
+  <div>
+    <h1>Simulacre de test</h1>
+    <p class="lead">Preguntes tipus test sobre el Reglament de circulació d'FGC, barrejades a l'atzar. Correcció automàtica, nota amb penalització i, a cada error, l'explicació i l'article i la pàgina exactes del Reglament on trobar-ho.</p>
+  </div>
+  <div class="card stack">
+    <div class="label">Mode</div>
+    <div class="modes">
+      <label class="mode"><input type="radio" name="mode" value="exam" checked><b>Examen</b><span>Sense pistes. Corregeix al final amb la nota real: encert +1, error −0,25, en blanc 0.</span></label>
+      <label class="mode"><input type="radio" name="mode" value="study"><b>Estudi</b><span>Respostes i explicació al moment, pregunta a pregunta.</span></label>
+    </div>
+    <div>
+      <label class="label" for="sel-bloc">Títol del Reglament</label>
+      <select id="sel-bloc"></select>
+    </div>
+    <label class="check"><input type="checkbox" id="chk-shuffle" checked> Barrejar l'ordre de les preguntes</label>
+    <div class="row">
+      <button class="btn grow" id="btn-start" type="button">Començar</button>
+      <button class="btn ghost grow" id="btn-resume" type="button" hidden>Continuar el test</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Com es puntua</h3>
+    <p class="note" style="margin:8px 0 0">Mateix criteri que les bases de la convocatòria de maquinista d'FGC 2023: cada encert suma 1, cada error resta 0,25 i en blanc val 0. L'objectiu d'aquest simulacre és una nota de <b>7 sobre 10 o més</b>. Si dubtes entre dues opcions, pensa què pots justificar amb un article del Reglament.</p>
+  </div>
+</section>
+
+<section id="v-quiz" class="stack" hidden>
+  <div class="card">
+    <div class="q-meta"><span class="q-n" id="q-count"></span><span class="label" id="q-sec"></span></div>
+    <div class="progress" style="margin-top:10px" aria-hidden="true"><i id="q-bar"></i></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="opts" id="q-opts"></div>
+    <div id="q-fb" hidden></div>
+  </div>
+  <div class="row">
+    <button class="btn ghost grow" id="btn-prev" type="button">Anterior</button>
+    <button class="btn grow" id="btn-next" type="button">Següent</button>
+  </div>
+  <div id="confirm" class="confirm" hidden>
+    <b id="confirm-t"></b>
+    <div class="row" style="margin-top:10px">
+      <button class="btn grow" id="btn-confirm" type="button">Corregir ara</button>
+      <button class="btn ghost grow" id="btn-back" type="button">Seguir revisant</button>
+    </div>
+  </div>
+  <div class="card stack">
+    <div class="label">Navegador de preguntes</div>
+    <div class="navgrid" id="navgrid"></div>
+    <div class="row">
+      <button class="btn ghost grow" id="btn-finish" type="button">Finalitzar i corregir</button>
+      <button class="btn ghost grow" id="btn-home" type="button">Sortir al menú</button>
+    </div>
+  </div>
+</section>
+
+<section id="v-result" class="stack" hidden>
+  <div class="card score" id="res-card"></div>
+  <div class="card stack"><h3>Resultat per blocs</h3><div class="bars" id="res-bars"></div></div>
+  <div class="stack">
+    <h2>Revisió de respostes</h2>
+    <div class="chips" id="res-filter">
+      <button class="chip" data-f="fail" aria-pressed="true" type="button">Errors i en blanc</button>
+      <button class="chip" data-f="ok" aria-pressed="false" type="button">Encerts</button>
+      <button class="chip" data-f="all" aria-pressed="false" type="button">Totes</button>
+    </div>
+    <div class="rev" id="res-list"></div>
+  </div>
+  <div class="row">
+    <button class="btn grow" id="btn-retry" type="button">Repetir errors i en blanc</button>
+    <button class="btn ghost grow" id="btn-new" type="button">Nou test</button>
+  </div>
+  <p class="note">Les pàgines indicades són les del PDF del Reglament de circulació, que coincideixen amb el número imprès al peu del document.</p>
+</section>
+
+<section id="v-dev" class="stack" hidden>
+  <div>
+    <h1>Desenvolupament</h1>
+    <p class="lead">Escriu la teva resposta abans de mirar el model. Cada pregunta es valora sobre 10 punts segons els punts clau.</p>
+  </div>
+  <div class="dev" id="dev-list"></div>
+</section>
+
+</main>
+
+<script>
+(function () {
+  var D = {"q": [{"sec": 1, "text": "En quin cas es poden establir comunicacions amb mitjans privats durant el servei?", "opts": ["Quan no es disposi dels mitjans de comunicació habituals", "Només quan estiguin relacionades amb el servei", "Quan ho autoritzi el comandament immediat de l'agent", "Quan l'agent estigui en una pausa i no tingui cap tren a càrrec"], "ans": 1, "expl": "L'art. 36.4 només permet les comunicacions amb mitjans privats que estiguin relacionades amb el servei.", "loc": "Reglament de circulació, Títol 1, Art. 36.4 (pàg. 15)"}, {"sec": 2, "text": "Segons l'art. 107, quina és la distància màxima d2 entre els senyals que formen una limitació de velocitat, i en funció de què es pot reduir?", "opts": ["150 m; es pot reduir segons les característiques del traçat, del material i de la limitació", "400 m; es pot reduir segons les característiques del traçat, del material i de l'adaptació a la velocitat", "400 m; es pot ampliar segons les característiques del traçat, del material i de la visibilitat", "250 m; es pot reduir segons les característiques de la visibilitat i del tipus de senyal"], "ans": 1, "expl": "A les figures de l'art. 107, d2 és una distància màxima de 400 m, reduïble segons el traçat, el material i l'adaptació a la velocitat.", "loc": "Reglament de circulació, Títol 2, Art. 107 (pàg. 55)"}, {"sec": 1, "text": "Què cal fer quan la incorporació d'una línia o ramal nou a la xarxa d'FGC exigeix normes de circulació diferents de les del Reglament?", "opts": ["Aplicar igualment les normes del Reglament general i deixar les diferències a criteri del comandament immediat", "Transmetre-les verbalment a cada agent de conducció abans del primer servei, sense cap document específic", "Establir-les en documents específics i assegurar que el personal en conegui les particularitats necessàries", "Modificar el Reglament amb un Modificatiu que anul·li les normes comunes per a tota la xarxa ferroviària"], "ans": 2, "expl": "L'art. 1.3 diu que aquestes normes diferents es fan en documents específics i que cal assegurar que el personal conegui totes les particularitats necessàries per garantir la seguretat.", "loc": "Reglament de circulació, Títol 1, Art. 1.3 (pàg. 9)"}, {"sec": 1, "text": "Quina d'aquestes actuacions està prohibida als agents durant el servei segons el Reglament?", "opts": ["Rebre en una dependència de circulació personal adscrit al servei que hi fa tasques de manteniment", "Abandonar el lloc de treball per força major, adoptant mesures que en garanteixin la seguretat", "Qualsevol acte que vagi en detriment de la lucidesa, com dormir o prendre productes que provoquin somnolència", "Comunicar al centre de comandament l'abandonament del servei d'un altre agent"], "ans": 2, "expl": "L'art. 36.2 prohibeix actes contra la lucidesa, com dormir o prendre begudes alcohòliques o productes que provoquin somnolència o excitació. Les altres opcions són permeses (36.1, 36.5 i 35.4).", "loc": "Reglament de circulació, Títol 1, Art. 36.2 (pàg. 15)"}, {"sec": 1, "text": "Quines dades s'han d'especificar, sempre que sigui possible, en comunicar un escapament de vehicles?", "opts": ["L'estat dels frens dels vehicles i la velocitat a què van", "El nom de l'agent responsable del dipòsit i el número del tren afectat", "El punt quilomètric de destinació i el nombre de viatgers", "El nombre de vehicles, el sentit de marxa i el tipus de càrrega"], "ans": 3, "expl": "L'art. 45.2 enumera: lloc i hora de l'escapament, nombre de vehicles, sentit de marxa i tipus de càrrega.", "loc": "Reglament de circulació, Títol 1, Art. 45.2 (pàg. 20)"}, {"sec": 5, "text": "Què cal fer si una maniobra s'ha de fer empenyent?", "opts": ["Reduir la velocitat a 10 km/h, amb l'agent de conducció a la cabina del cap davant, per evitar qualsevol circumstància", "Demanar autorització al centre de comandament, que ha de comunicar a l'agent de conducció qualsevol circumstància", "Situar un agent al darrere, directament comunicat amb l'agent de conducció, per avisar-lo de qualsevol circumstància", "Situar un agent al cap davant, directament comunicat amb l'agent de conducció, per avisar-lo de qualsevol circumstància"], "ans": 3, "expl": "L'art. 170.2 obliga a situar al cap davant un agent directament comunicat amb l'agent de conducció.", "loc": "Reglament de circulació, Títol 5, Art. 170.2 (pàg. 84)"}, {"sec": 1, "text": "En cas d'incendi en un tren, què fa el centre de comandament?", "opts": ["Talla la tensió de tota la xarxa i prohibeix qualsevol circulació fins que s'hagi apagat el foc", "Ordena evacuar de seguida els viatgers per la via, sigui quin sigui el lloc on s'ha aturat el tren", "Alerta els trens que puguin circular per les vies contigües i disposa l'arribada de socors", "Ordena que el tren romangui immòbil al lloc fins que arribi el personal de socors"], "ans": 2, "expl": "Segons l'art. 46.2, el centre de comandament alerta els trens de les vies contigües i disposa el que calgui per fer arribar socors.", "loc": "Reglament de circulació, Títol 1, Art. 46.2 (pàg. 20)"}, {"sec": 4, "text": "Quins són els trens de servei interior més habituals?", "opts": ["Els addicionals, els de treballs i els de socors", "Els de material buit, els de treballs i els de proves", "Els de mercaderies, els de treballs i els de proves", "Els de material buit, els de socors i els de viatgers"], "ans": 1, "expl": "L'art. 163.1 cita com a més habituals els trens de material buit, de treballs i de proves.", "loc": "Reglament de circulació, Títol 4, Art. 163.1 (pàg. 80)"}, {"sec": 3, "text": "Davant una avaria que inutilitza, encara que sigui parcialment, el blocatge automàtic, què pot autoritzar el centre de comandament?", "opts": ["El retrocés del tren fins a l'estació anterior i la supressió de tots els encreuaments", "La desconnexió dels sistemes de fre i l'ultrapassament de qualsevol senyal del trajecte", "L'ultrapassament dels senyals afectats només si l'agent de conducció té la credencial d'instructor", "L'ultrapassament dels senyals afectats o la desconnexió dels sistemes de senyalització en cabina"], "ans": 3, "expl": "L'art. 122.1 permet al centre de comandament autoritzar l'ultrapassament dels senyals afectats o la desconnexió de la senyalització en cabina.", "loc": "Reglament de circulació, Títol 3, Art. 122.1 (pàg. 64)"}, {"sec": 2, "text": "Què ha de precedir qualsevol senyal de parada o de règim de maniobres?", "opts": ["Un altre senyal, al terreny o en cabina, que n'anunciï la reducció de la marxa", "Un senyal de seccionament de la catenària que n'indiqui la proximitat al tren", "Una notificació escrita del centre de comandament lliurada a l'agent de conducció", "Un senyal de proximitat de pas a nivell col·locat a la distància que s'estableixi"], "ans": 0, "expl": "L'art. 57.5 exigeix que tot senyal de parada o de règim de maniobres estigui prèviament anunciat per un altre senyal, al terreny o en cabina, que indiqui la reducció de la marxa.", "loc": "Reglament de circulació, Títol 2, Art. 57.5 (pàg. 26)"}, {"sec": 5, "text": "Quan no cal que els agents de conducció repeteixin amb el xiulet el codi acústic dels senyals que reben dels agents de maniobres?", "opts": ["Quan la maniobra es fa des de la cabina de cua", "En els casos d'execució de la prova del fre", "Quan l'ordre es transmet per radiotelèfon portàtil", "En els casos de maniobres amb automotors"], "ans": 1, "expl": "L'art. 166.7 estableix que els agents de conducció repeteixen amb el xiulet el codi acústic per refermar la comprensió, però no cal fer-ho en l'execució de la prova del fre.", "loc": "Reglament de circulació, Títol 5, Art. 166.7 (pàg. 83)"}, {"sec": 1, "text": "Què s'ha de fer en cas de dubtes en situacions extremes?", "opts": ["Continuar el servei amb normalitat fins a rebre noves instruccions", "Continuar amb el servei previst fins que l'operador indiqui el contrari", "Adoptar les màximes mesures de seguretat fins a rebre noves instruccions", "Abandonar el lloc de treball i esperar instruccions escrites del comandament immediat"], "ans": 2, "expl": "L'art. 37.4 diu que cal adoptar sempre les màximes mesures de seguretat en espera d'instruccions del centre de comandament o del comandament immediat.", "loc": "Reglament de circulació, Títol 1, Art. 37.4 (pàg. 16)"}, {"sec": 1, "text": "Quan s'ha de remolcar un tren avariat amb un tren de socors, quin enllumenat cal encendre en el tren avariat, si és possible?", "opts": ["L'enllumenat interior dels vehicles i els senyals de cua", "El del costat pel qual ha d'arribar el tren de socors", "El del costat contrari a aquell per on ha d'arribar el tren de socors", "El de les cabines de conducció d'ambdós extrems del tren"], "ans": 1, "expl": "L'art. 47.2 exigeix immobilitzar el tren avariat i encendre'n l'enllumenat del costat pel qual ha d'arribar el tren de socors.", "loc": "Reglament de circulació, Títol 1, Art. 47.2 (pàg. 20)"}, {"sec": 2, "text": "Què es pot fer quan no hi ha prou distància per adaptar la marxa entre un senyal i els canvis d'agulles pels quals cal reduir la velocitat?", "opts": ["Repetir la indicació intermitent al senyal anterior, si no hi ha dubtes sobre els canvis", "Fer aturar tots els trens al senyal anterior fins que els canvis d'agulles quedin lliures", "Col·locar al senyal anterior un senyal de velocitat de pas per canvis d'agulles a 60 km/h", "Presentar al senyal anterior un senyal de precaució manual perquè el tren redueixi a 30 km/h"], "ans": 0, "expl": "Si la distància és insuficient, la indicació intermitent es pot repetir al senyal anterior, sempre que no hi hagi dubtes sobre els canvis a ultrapassar per via desviada (art. 60.3).", "loc": "Reglament de circulació, Títol 2, Art. 60.3 (pàg. 28)"}, {"sec": 4, "text": "Quina velocitat màxima s'aplica, si no hi ha indicació diferent, en passar per un canvi d'agulles d'accionament manual sense enclavament?", "opts": ["20 km/h tant per via directa com per via desviada", "60 km/h per via directa i 30 km/h per via desviada", "30 km/h per via desviada i marxa normal per via directa", "30 km/h, tant per via directa com per via desviada"], "ans": 3, "expl": "L'art. 142.1.a fixa 30 km/h per via directa o desviada en canvis manuals sense enclavament i en canvis talonables.", "loc": "Reglament de circulació, Títol 4, Art. 142.1.a (pàg. 73)"}, {"sec": 4, "text": "Des de quina cabina es condueix en fer maniobres o retrocedir amb automotors de dues cabines, i si no és possible?", "opts": ["Des de la cabina amb millor visibilitat; si no és possible, un agent al capdavant del tren, comunicat amb l'agent de conducció", "Des de la cabina que el maquinista consideri més còmoda; si no és possible, un segon maquinista condueix el tren", "Des de la cabina de cap del sentit de la marxa habitual; si no és possible, el moviment l'ha d'autoritzar el centre de comandament", "Des de la cabina amb millor visibilitat; si no és possible, el moviment es fa a 10 km/h i amb la màxima precaució possible"], "ans": 0, "expl": "L'art. 147.2 diu que es condueix des de la cabina amb millor visibilitat; si no pot ser, un agent al capdavant, comunicat amb l'agent de conducció, indica les condicions per circular.", "loc": "Reglament de circulació, Títol 4, Art. 147.2 (pàg. 75)"}, {"sec": 5, "text": "A quina distància mínima aproximada del darrere d'un tren estacionat han de passar els agents que executen maniobres?", "opts": ["2 metres", "10 metres", "1,5 metres", "5 metres"], "ans": 3, "expl": "L'art. 175 prohibeix passar pel darrere d'un tren estacionat a menys de 5 metres aproximadament; els 10 metres són per creuar la via entre vehicles.", "loc": "Reglament de circulació, Títol 5, Art. 175 (pàg. 87)"}, {"sec": 1, "text": "Quan pot el centre de comandament exigir que un missatge relacionat amb la circulació es trameti com a notificació?", "opts": ["Quan per raons de seguretat o regularitat ho consideri necessari, per a qualsevol missatge", "Només quan el missatge afecti més d'un tren i hi hagi una incidència declarada a la línia", "Només en els casos de blocatge manual o de treballs a la via que afectin la circulació", "Només quan l'agent receptor ho sol·liciti expressament perquè no té clar el contingut"], "ans": 0, "expl": "L'art. 38.4 faculta el centre de comandament a exigir la tramesa com a notificació de qualsevol missatge de circulació quan per seguretat o regularitat ho cregui necessari.", "loc": "Reglament de circulació, Títol 1, Art. 38.4 (pàg. 17)"}, {"sec": 1, "text": "Com pot ser un punt de blocatge pel que fa a la seva permanència, i en quins casos és temporal?", "opts": ["Fix o temporal; el temporal s'estableix en casos de retard o d'avaria dels sistemes de protecció", "Només fix; es pot situar en qualsevol estació, baixador, apartador o punt quilomètric", "Fix o temporal; el temporal s'estableix només durant les maniobres o els trens de socors", "Fix o temporal; el temporal s'estableix en casos d'incidents o treballs"], "ans": 3, "expl": "L'art. 28.2 indica que un punt de blocatge pot ser fix o temporal, aquest darrer per a incidents o treballs.", "loc": "Reglament de circulació, Títol 1, Art. 28.2 (pàg. 13)"}, {"sec": 1, "text": "Què ha de fer un agent que sap que un altre agent ha abandonat el servei o no pot desenvolupar les funcions encomanades?", "opts": ["Avisar el comandament immediat de l'agent absent i esperar que n'organitzi el relleu", "Comunicar-ho al centre de comandament, del qual rebrà les instruccions adients", "Prendre les mesures de seguretat que cregui oportunes i registrar-ho només al seu full de servei", "Assumir directament les funcions de l'altre agent fins que acabi el seu propi torn de treball"], "ans": 1, "expl": "L'art. 35.4 obliga a comunicar-ho al centre de comandament, que dóna les instruccions. Assumir funcions d'un altre agent és contrari a l'art. 37.1, tret que sigui per evitar una situació de risc.", "loc": "Reglament de circulació, Títol 1, Art. 35.4 (pàg. 15)"}, {"sec": 5, "text": "Si una anomalia impedeix establir els itineraris per fer una maniobra, quan cal autoritzar l'ultrapassament dels senyals afectats?", "opts": ["Només si el centre de comandament ho ordena expressament en cada cas", "Només si les agulles s'accionen manualment amb maneta, no elèctricament", "Només si les agulles s'accionen elèctricament des de l'enclavament", "Tant si les agulles s'accionen elèctricament com si es fa manualment amb maneta"], "ans": 3, "expl": "L'art. 174.1 indica que cal autoritzar l'ultrapassament segons el títol de Senyalització, independentment de com s'accionin les agulles.", "loc": "Reglament de circulació, Títol 5, Art. 174.1 (pàg. 86)"}, {"sec": 2, "text": "Què es col·loca a totes les estacions situades dins un trajecte amb limitació de velocitat?", "opts": ["Un senyal executiu, visible des del punt d'estacionament, per recordar la velocitat màxima permesa", "Un senyal de velocitat de pas per canvis d'agulles, visible des de l'andana, en tots els casos", "Un senyal de final de limitació, visible des del punt d'estacionament, per reprendre la marxa normal", "Un senyal d'anunci de color groc, visible des de l'entrada de l'estació, per preparar la frenada"], "ans": 0, "expl": "L'art. 75.7 prescriu un senyal executiu visible des del punt d'estacionament, per recordar als agents de conducció la velocitat màxima permesa.", "loc": "Reglament de circulació, Títol 2, Art. 75.7 (pàg. 38)"}, {"sec": 6, "text": "Entre quins punts s'estableix el règim d'interceptació per impedir l'accés de trens al tram interceptat?", "opts": ["Entre dues zones de treballs, tancant els senyals de parada fixos de cada zona", "Entre dues estacions o punts de blocatge, tancant els senyals de blocatge d'accés", "Entre la zona de treballs i l'estació més propera, amb marxa a la vista", "Entre dues estacions o punts de blocatge, obrint els senyals de blocatge d'accés"], "ans": 1, "expl": "L'art. 191.1 diu que s'estableix entre dues estacions o punts de blocatge i que es tanquen els senyals de blocatge que hi pugui haver per accedir al tram.", "loc": "Reglament de circulació, Títol 6, Art. 191.1 (pàg. 96)"}, {"sec": 1, "text": "Si a un agent se li ordena una operació relacionada amb la seguretat per a la qual no està habilitat, què ha de fer?", "opts": ["La farà només si no hi ha cap altre agent habilitat disponible en aquell moment al lloc", "No la farà i ho comunicarà al seu comandament immediat o al centre de comandament", "No la farà, però no ho ha de comunicar a ningú si un altre agent la pot dur a terme", "La farà seguint les indicacions de qui l'hi ha ordenat i després ho comunicarà al comandament"], "ans": 1, "expl": "Segons l'art. 37.2, l'agent no ha de fer l'operació i ho ha de comunicar al comandament immediat o al centre de comandament.", "loc": "Reglament de circulació, Títol 1, Art. 37.2 (pàg. 15)"}, {"sec": 2, "text": "Què han de fer els agents de conducció que troben un senyal de règim de maniobres sense saber per què es presenta?", "opts": ["Aturar la marxa i contactar amb el centre de comandament o amb l'agent de circulació per ser informats", "Aturar la marxa i esperar que l'agent de circulació de la dependència més propera s'hi acosti", "Continuar en règim de maniobres fins al punt final del moviment i comunicar-ho en arribar", "Continuar amb marxa a la vista fins a trobar el senyal de blocatge següent i demanar-hi informació"], "ans": 0, "expl": "L'art. 65.3 ordena aturar la marxa i posar-se en contacte amb el centre de comandament o amb l'agent de circulació per ser informats.", "loc": "Reglament de circulació, Títol 2, Art. 65.3 (pàg. 31)"}, {"sec": 1, "text": "A qui comunica, pel mitjà més ràpid, un agent que detecta un escapament de vehicles?", "opts": ["Al centre de comandament o a l'estació d'on han sortit els vehicles escapats", "Al centre de comandament o a l'estació cap a la qual es dirigeixin els vehicles escapats", "Només al centre de comandament, que avisarà les estacions que cregui oportú", "A l'agent de circulació de l'última estació que els vehicles escapats hagin ultrapassat"], "ans": 1, "expl": "L'art. 45.1 indica que ho comunica pel mitjà més ràpid al centre de comandament o a l'estació cap a la qual es dirigeixin els vehicles.", "loc": "Reglament de circulació, Títol 1, Art. 45.1 (pàg. 20)"}, {"sec": 5, "text": "En quin cas no s'han d'efectuar enganxaments abans de la parada completa del vehicle?", "opts": ["Quan el vehicle tractor porta els frens afluixats", "Quan el vehicle maniobrat és un automotor buit", "Quan la locomotora o el vehicle tractor porta llevaneus", "Quan la maniobra es fa amb senyalització manual"], "ans": 2, "expl": "Entre els casos de l'art. 176 en què no s'enganxa abans de la parada completa hi ha: agent sobre aparells de via, càrregues desplaçables, enganxaments especials, avaria dels aparells de tracció i xoc, llevaneus i balast irregular.", "loc": "Reglament de circulació, Títol 5, Art. 176 (pàg. 87)"}, {"sec": 2, "text": "Què ha de fer l'agent de conducció si els indicadors d'un canvi d'agulles senyalitzen una via diferent de la que ha de seguir el tren?", "opts": ["Retrocedir fins al senyal anterior i avisar el centre de comandament", "Parar immediatament i demanar instruccions als agents de circulació", "Reduir la marxa a 30 km/h i continuar fins al senyal de blocatge següent", "Avançar amb marxa a la vista i comunicar la incidència a l'estació següent"], "ans": 1, "expl": "Si els indicadors, de qualsevol tipus, senyalitzen una via diferent, cal efectuar parada immediata i demanar instruccions als agents de circulació (art. 74.7).", "loc": "Reglament de circulació, Títol 2, Art. 74.7 (pàg. 37)"}, {"sec": 2, "text": "A les fites hectomètriques, què indiquen el número superior i l'inferior?", "opts": ["El superior correspon al quilòmetre i l'inferior a l'hectòmetre", "El superior correspon al quilòmetre i l'inferior a les mil·lèsimes de desnivell", "El superior correspon a l'hectòmetre i l'inferior al quilòmetre", "El superior correspon a la velocitat màxima i l'inferior al quilòmetre"], "ans": 0, "expl": "L'art. 82.1 diu que a les fites hectomètriques el número superior és el quilòmetre i l'inferior l'hectòmetre.", "loc": "Reglament de circulació, Títol 2, Art. 82.1 (pàg. 41)"}, {"sec": 6, "text": "Si s'interrompen les comunicacions entre diversos trens que operen en una mateixa zona de treballs, qui actua com a intermediari?", "opts": ["El tren de treballs que sigui més a prop del senyal de parada fix", "L'agent de protecció de la brigada o l'últim tren que hi ha entrat", "El cap de brigada o, si s'escau, el centre de comandament", "L'agent de circulació de l'estació més propera o el cap de maniobres"], "ans": 2, "expl": "L'art. 194.3 estableix que, si s'interrompen les comunicacions, el cap de brigada o, si s'escau, el centre de comandament actua d'intermediari.", "loc": "Reglament de circulació, Títol 6, Art. 194.3 (pàg. 97)"}, {"sec": 1, "text": "Què han de fer els agents que són presents en un incident?", "opts": ["Posar-se a disposició de qui coordini les tasques per resoldre'l o minvar-ne les conseqüències", "Mantenir la seva posició i esperar que el centre de comandament els assigni una tasca", "Abandonar el lloc de l'incident i comunicar-ho per escrit al comandament immediat", "Assumir la direcció de les tasques d'acord amb la seva habilitació i antiguitat"], "ans": 0, "expl": "L'art. 41.3 estableix que els agents presents en un incident se situen a disposició de qui coordini les tasques de resolució.", "loc": "Reglament de circulació, Títol 1, Art. 41.3 (pàg. 19)"}, {"sec": 3, "text": "Un tren ultrapassa el senyal de sortida o un piquet i hi ha perill imminent. Què ha de fer?", "opts": ["Aturar-se sense moure's i esperar les instruccions del centre de comandament", "Retrocedir de seguida i comunicar-ho després al centre de comandament", "Avançar fins al següent senyal i comunicar-ho a l'agent de circulació", "Retrocedir només fins al punt de referència i informar l'agent de circulació"], "ans": 1, "expl": "L'art. 112.5 imposa retrocedir immediatament en cas de perill imminent i comunicar-ho després al centre de comandament.", "loc": "Reglament de circulació, Títol 3, Art. 112.5 (pàg. 59)"}, {"sec": 4, "text": "Quin senyal han d'atendre, a més, els agents de conducció quan els sistemes d'obertura i tancament de portes no són a la cabina?", "opts": ["El senyal de Tren disposat presentat per l'agent d'acompanyament", "El senyal d'Alto presentat per l'agent d'acompanyament", "El senyal de Via lliure presentat per l'agent de circulació", "El senyal de Tren complet presentat per l'agent d'estació"], "ans": 0, "expl": "L'art. 154.2 diu que han d'atendre el senyal de Tren disposat de l'agent d'acompanyament.", "loc": "Reglament de circulació, Títol 4, Art. 154.2 (pàg. 77)"}, {"sec": 4, "text": "Quan no està assegurat el tancament de les portes avariades, què ordena el centre de comandament?", "opts": ["La retirada immediata del tren i el trasllat dels viatgers en un tren de socors", "La retirada del tren o la incorporació dels agents necessaris per garantir la seguretat", "La reparació de les portes a la propera estació amb parada prescrita del tren", "La continuació del servei a la mínima velocitat amb les portes avariades precintades"], "ans": 1, "expl": "L'art. 155.2 preveu retirar el tren o incorporar els agents necessaris per garantir la seguretat.", "loc": "Reglament de circulació, Títol 4, Art. 155.2 (pàg. 77)"}, {"sec": 4, "text": "Quan s'ha de programar, sempre que sigui possible, el remolc d'una composició autopropulsada amb els seus sistemes de fre totalment anul·lats?", "opts": ["Fora dels horaris comercials, amb les prescripcions dels documents particulars publicats a l'efecte", "Fora dels horaris comercials, però només en règim d'interceptació i amb marxa a la vista en tot el recorregut", "Durant els horaris comercials de menys afluència, amb la presència d'un agent a cada cabina de conducció", "Dins dels horaris comercials, però només en trajectes de via doble, amb l'autorització del centre de comandament"], "ans": 0, "expl": "L'art. 144.3 estableix que, en casos extraordinaris, el remolc amb fre totalment anul·lat es programa fora dels horaris comercials si és possible i seguint els documents particulars.", "loc": "Reglament de circulació, Títol 4, Art. 144.3 (pàg. 74)"}, {"sec": 2, "text": "Un tren s'atura havent ultrapassat un senyal de parada en aspecte manual que s'ha presentat de manera imprevista. Què ha de fer l'agent de conducció?", "opts": ["Retrocedir fins al davant del senyal i reprendre la marxa quan l'agent que el presenta ho indiqui", "Esperar que l'agent que presenta el senyal li autoritzi la marxa i informar-ne al final del servei", "Reprendre la marxa a la vista fins al proper punt de blocatge i comunicar-ho després", "Comunicar-ho al centre de comandament i esperar-ne les instruccions per reprendre la marxa"], "ans": 3, "expl": "L'art. 63.3 admet que l'aturada es verifiqui havent-lo ultrapassat; llavors s'ha de comunicar al centre de comandament i esperar-ne les instruccions.", "loc": "Reglament de circulació, Títol 2, Art. 63.3 (pàg. 30)"}, {"sec": 1, "text": "Quines persones agrupa el terme «agents de circulació»?", "opts": ["Les que regulen la circulació i les que supervisen els agents en pràctiques durant la seva formació", "Les que treballen al centre de comandament i les que fan maniobres en estacions i apartadors", "Les que poden regular la circulació: operadors i agents de servei en estacions i punts de blocatge", "Les que condueixen els trens i les que acompanyen els trens en determinades circumstàncies del servei"], "ans": 2, "expl": "Segons l'art. 8, agents de circulació són els operadors i els agents de servei a les estacions i punts de blocatge.", "loc": "Reglament de circulació, Títol 1, Art. 8 (pàg. 11)"}, {"sec": 4, "text": "Qui autoritza la reducció de la càrrega d'un tren en condicions de temps humit o plujós i com es demana?", "opts": ["El centre de comandament, d'ofici, sense petició de l'agent de conducció, aplicant un percentatge fix del 10%", "L'agent de conducció, que fixa el percentatge de reducció i ho comunica després al centre de comandament", "L'agent de circulació de l'estació d'origen, que fixa el percentatge de reducció, a petició verbal de l'agent de conducció", "El centre de comandament, que fixa el percentatge de reducció, a petició de l'agent de conducció per mitjà de notificació"], "ans": 3, "expl": "L'art. 161 diu que l'agent de conducció ho sol·licita per notificació al centre de comandament, que ho autoritza i fixa el percentatge; el centre n'informa l'agent de circulació encarregat.", "loc": "Reglament de circulació, Títol 4, Art. 161 (pàg. 80)"}, {"sec": 1, "text": "En quines circumstàncies es fa la petició urgent d'interrupció de tensió?", "opts": ["Per protegir només els agents en treballs i per evitar retards en la circulació dels trens", "Per fer maniobres amb trens de socors i per restablir el servei després d'una avaria", "Per protegir els viatgers dins els trens i per autoritzar l'ús de vehicles de tracció no elèctrica", "Per protegir persones a la zona de via o als voltants i garantir la seguretat de la circulació"], "ans": 3, "expl": "L'art. 49.1 preveu dos supòsits: protegir les persones a la zona de via o voltants i garantir la seguretat de la circulació.", "loc": "Reglament de circulació, Títol 1, Art. 49.1 (pàg. 21)"}, {"sec": 3, "text": "Quines normes s'apliquen als vehicles que, per les seves característiques, no es poden detectar automàticament?", "opts": ["Les que fixi el centre de comandament cas per cas", "Les previstes per a la marxa a la vista en tot el trajecte", "Les previstes per als sistemes de blocatge manuals", "Les previstes per als sistemes de blocatge automàtics"], "ans": 2, "expl": "L'art. 109.6 diu que aquests vehicles queden subjectes a les normes dels sistemes de blocatge manuals.", "loc": "Reglament de circulació, Títol 3, Art. 109.6 (pàg. 58)"}, {"sec": 2, "text": "Quin és el senyal acústic (xiulet de bola) de l'ordre «Afluixar frens» en la comprovació dels sistemes de fre?", "opts": ["Un sol toc llarg de xiulet", "Un toc llarg i un de curt de xiulet", "Un toc llarg seguit de dos tocs curts de xiulet", "Un sol toc curt de xiulet"], "ans": 1, "expl": "Segons l'art. 68, afluixar frens és un toc llarg i un de curt; accionar frens és un toc llarg i dos de curts, fre defectuós un de llarg i fre correcte un de curt.", "loc": "Reglament de circulació, Títol 2, Art. 68 (pàg. 33)"}, {"sec": 6, "text": "Què cal establir perquè els vehicles lleugers o mixtes carretera-ferrocarril puguin ser encarrilats?", "opts": ["Un sistema de blocatge manual", "El règim d'interval", "El règim d'interceptació", "La marxa a la vista en tot el tram"], "ans": 2, "expl": "Segons l'art. 190.3 aquests vehicles necessiten el règim d'interceptació per ser encarrilats i no poden sobrepassar els límits de la zona de treballs assignada.", "loc": "Reglament de circulació, Títol 6, Art. 190.3 (pàg. 96)"}, {"sec": 4, "text": "Quins són els trens addicionals?", "opts": ["Trens discrecionals que figuren al llibre d'itineraris i es posen en circulació segons les necessitats del servei, en tot o part del recorregut", "Trens regulars que figuren al llibre d'itineraris i circulen amb marxa pròpia, diàriament o periòdicament, segons s'hi indiqui", "Trens especials que complementen els regulars, amb la mateixa marxa i respectant-ne parades i encreuaments", "Trens especials que no figuren al Llibre d'itineraris i circulen amb una marxa pròpia, independent dels regulars"], "ans": 2, "expl": "L'art. 134.2.b.3 defineix els addicionals com a especials que complementen els regulars per pèrdues d'enllaços o manca de capacitat, amb la mateixa marxa i a la distància mínima de blocatge.", "loc": "Reglament de circulació, Títol 4, Art. 134.2.b.3 (pàg. 70)"}, {"sec": 6, "text": "Què cal fer quan, per una circumstància especial, un responsable de brigada és rellevat per un altre?", "opts": ["Comunicar la substitució a l'agent de circulació un cop feta", "Informar els agents de conducció dels trens del tram afectat", "Registrar el relleu al llibre de la brigada sense avisar ningú", "Comunicar la substitució prèviament al centre de comandament"], "ans": 3, "expl": "Segons l'art. 182.2 la substitució del responsable de brigada s'ha de comunicar prèviament al centre de comandament.", "loc": "Reglament de circulació, Títol 6, Art. 182.2 (pàg. 91)"}, {"sec": 1, "text": "Què ha de fer el personal relacionat amb la circulació si, abans d'iniciar el servei, detecta que li falta algun estri o informació necessària?", "opts": ["Comunicar-ho al centre de comandament", "Comunicar-ho al comandament immediat i esperar-ne les instruccions", "Iniciar el servei i demanar-ho a la primera dependència amb estoc", "Sol·licitar-ho a l'agent que finalitza el torn en el relleu"], "ans": 0, "expl": "L'art. 35.1 obliga a assegurar-se de disposar d'estris i informació, i a comunicar al centre de comandament qualsevol mancança.", "loc": "Reglament de circulació, Títol 1, Art. 35.1 (pàg. 15)"}, {"sec": 3, "text": "Si un tren no lliura per la cua el piquet o el tram de detecció que abandona, què ha de fer?", "opts": ["Retrocedir fins al punt de referència i comunicar-ho al centre de comandament per escrit", "Quedar-se immòbil i demanar autorització al centre de comandament abans de fer qualsevol moviment", "Avançar fins a estacionar correctament i informar tot seguit el centre de comandament", "Avançar fins a estacionar correctament, sense informar el centre ni l'agent de circulació"], "ans": 3, "expl": "Segons l'art. 112.6, el tren avança fins a l'estacionament correcte sense necessitat d'informar el centre de comandament ni l'agent de circulació.", "loc": "Reglament de circulació, Títol 3, Art. 112.6 (pàg. 59)"}, {"sec": 6, "text": "Quina d'aquestes dades NO ha de comunicar el responsable de brigada en sol·licitar la interrupció de la tensió?", "opts": ["El motiu pel qual cal la interrupció", "El nom de l'agent que ho sol·licita", "L'hora prevista d'acabament dels treballs", "La via on s'han de fer els treballs"], "ans": 2, "expl": "L'art. 188.2 enumera: punt quilomètric, estació o secció de catenària; via; motiu de la interrupció; i nom de l'agent que la demana. L'hora de finalització no hi figura.", "loc": "Reglament de circulació, Títol 6, Art. 188.2 (pàg. 95)"}, {"sec": 5, "text": "Quan es pot transmetre l'ordre de tirar o d'empènyer en un enganxament?", "opts": ["Quan l'enganxador ja ha sortit d'entre els vehicles i s'ha posat a cobert", "Quan l'enganxador ha acabat de pujar la brida i es manté entre els dos vehicles", "Quan l'agent de conducció ha confirmat amb el xiulet que ha entès l'ordre", "Quan els vehicles ja han assolit una velocitat inferior a 2 km/h entre ells"], "ans": 0, "expl": "L'art. 176 estableix que no es transmetrà l'ordre de tirar o empènyer abans que l'enganxador hagi sortit d'entre els vehicles i s'hagi posat a cobert.", "loc": "Reglament de circulació, Títol 5, Art. 176 (pàg. 87)"}, {"sec": 3, "text": "En un sistema de blocatge manual, què han de fer els agents en cas de dubte sobre dos moviments?", "opts": ["No autoritzar-los simultàniament si un, en passar el seu punt límit, podria col·lisionar amb l'altre", "Consultar el centre de comandament i autoritzar-los amb una notificació escrita de cada moviment", "Autoritzar primer el tren amb més retard i fer esperar l'altre al darrere del senyal d'entrada", "Autoritzar-los simultàniament si els dos trens circulen a marxa a la vista i estan comunicats amb el centre de comandament"], "ans": 0, "expl": "L'art. 110.3 impedeix autoritzar dos moviments a la vegada si un, en passar el seu punt límit, podria col·lisionar amb l'altre.", "loc": "Reglament de circulació, Títol 3, Art. 110.3 (pàg. 58)"}, {"sec": 3, "text": "Un cop establert el blocatge manual, com es verifica el control sobre la circulació quan el centre de comandament rep l'acusament de rebuda de la notificació?", "opts": ["Mitjançant el pas per la via directa de totes les estacions del tram afectat", "Mitjançant l'ordre de parada als senyals de blocatge entre les estacions establertes", "Mitjançant la concessió dels cantons de via entre els diferents punts de blocatge establerts", "Mitjançant la marxa a la vista dels trens entre els diferents punts de blocatge establerts"], "ans": 2, "expl": "L'art. 124.7 diu que, des de l'acusament de rebuda, el control es verifica per la concessió dels cantons entre els punts de blocatge.", "loc": "Reglament de circulació, Títol 3, Art. 124.7 (pàg. 66)"}], "dev": [{"title": "Situació i posada fora de servei dels senyals", "text": "Explica on es col·loquen els senyals respecte a la via i de quines maneres es poden posar fora de servei o considerar inexistents.", "ref": "Art. 55 i 56 (pàg. 24 a 25)", "pts": ["Normalment els senyals es col·loquen a la dreta, en el sentit de la marxa, o a sobre de la via a la qual donen indicacions (art. 55.1).", "Els senyals que donen indicacions per circular a contravia es col·loquen normalment a l'esquerra, en el sentit de la marxa, o a sobre de la via (art. 55.2).", "Un senyal pot donar indicacions a dues vies com a màxim i porta adossat un senyal de vies afectades, igual que quan hi ha dubtes sobre la via a què es refereix (art. 55.5).", "En via doble, el tren que circula a contravia atén també els senyals de les instal·lacions i els complementaris de la via contigua si no hi són a la seva (art. 55.6).", "Per posar un senyal fora de servei es poden col·locar al davant dos llistons blancs creuats, girar-ne el cap uns 90º quan sigui possible, o cobrir-lo de manera fiable amb materials resistents de color fosc i ben fixats (art. 56.1).", "Si en un mateix pal hi ha més d'un senyal, només s'actua sobre els que cal posar fora de servei (art. 56.2)."]}, {"title": "Zones de risc i zones d'ombra de la radiotelefonia", "text": "Descriu els senyals de zona de risc i de zona d'ombra de la radiotelefonia i com ha d'actuar l'agent de conducció en cadascun.", "ref": "Art. 96 i 97 (pàg. 47 a 48)", "pts": ["El senyal de zona de risc protegeix zones de la línia amb risc elevat d'esllavissades o altres incidències; la zona es delimita amb un senyal d'inici i un de final, i el d'inici pot portar la distància en metres (art. 96.1 i 96.2).", "Un senyal automàtic preventiu de zona de risc en aspecte de marxa a la vista ordena circular amb marxa a la vista des del senyal d'inici fins al de final (art. 96.3).", "Amb l'altre aspecte preventiu, es circula a marxa normal però amb atenció especial pel tram entre l'inici i el final de la zona de risc (art. 96.3).", "El senyal de zona d'ombra indica llocs de la línia on les comunicacions per ràdio no estan assegurades (art. 97.1).", "Dins la zona d'ombra, per comunicar-se amb el centre de comandament o els agents de circulació s'han d'usar mitjans alternatius als quals es tingui accés (art. 97.2).", "El senyal de prova indica el punt on cal verificar el funcionament de la ràdio; si no és correcte, es comunica al centre de comandament pels mitjans disponibles (art. 97.3)."]}, {"title": "Classificació i identificació dels trens", "text": "Explica com es classifiquen els trens i quina subclassificació s'hi estableix, i descriu com s'identifiquen.", "ref": "Art. 134 i 135 (pàg. 70)", "pts": ["Segons la finalitat: trens de viatgers, de mercaderies i de servei interior (134.1).", "Subclassificació: regulars (al llibre d'itineraris, circulen diàriament o periòdicament) i extraordinaris, que no hi figuren (134.2.a i b).", "Extraordinaris: discrecionals (figuren al Llibre d'itineraris i es posen en circulació segons necessitats del servei, en tot el recorregut o en part), especials (no hi figuren, es posen en circulació segons necessitats i la seva marxa pot ser creada per document específic) i addicionals (especials que complementen els regulars per pèrdues d'enllaços, manca de capacitat, etc.; mateixa marxa, a la distància mínima de blocatge del regular i respectant-ne parades i encreuaments) (134.2.b)", "Tots els trens s'identifiquen per un codi numèric o alfanumèric individual definit al Llibre d'itineraris; els que no hi figuren reben identificació segons el sistema del Llibre (135.1 i 135.2).", "Sentit: número senar al final per a un sentit i parell per al contrari (135.3).", "El codi ha de ser únic per a tota una jornada de servei (135.4)."]}, {"title": "Sistemes de fre i condicions per circular", "text": "Descriu els sistemes de fre mínims que han de tenir els vehicles i les condicions que s'exigeixen als frens per circular.", "ref": "Art. 143 i 144 (pàg. 74)", "pts": ["Vehicles motors: fre directe (hidràulic o pneumàtic), fre indirecte o automàtic si poden remolcar, i fre d'estacionament (143.1).", "Vehicles remolcats: fre indirecte o automàtic i fre d'estacionament (143.2).", "Els frens han d'assegurar la detenció i estacionament en les condicions màximes de càrrega i pendent del trajecte (143.3).", "Els vehicles sense frens no poden circular, tret que s'estableixi el règim d'interceptació del tram (143.4).", "Han de funcionar correctament i els agents de conducció han de provar-ne l'eficàcia abans del servei (144.1).", "Vehicles amb restriccions de fre: només en cas d'avaria i amb les condicions de marxa prescrites als documents adients (144.2); composicions autopropulsades remolcades amb els frens totalment anul·lats: circulació programada fora d'horaris comercials si és possible, amb les prescripcions dels documents particulars (144.3)"]}, {"title": "Estacionament de trens", "text": "Explica les normes sobre l'estacionament de trens: on s'estacionen, què cal fer si s'ultrapassa el senyal de sortida o un piquet, i com s'actua amb trens de viatgers que ultrapassen el punt de referència.", "ref": "Art. 112 (pàg. 59)", "pts": ["Els trens s'estacionen a les vies designades sense ultrapassar els senyals o els piquets de seguretat; si hi ha balises de protecció, aquestes delimiten el punt a no ultrapassar (112.1)", "Els trens de viatgers s'estacionen a les andanes a l'alçada del punt de referència amb la màxima precisió possible (112.2)", "Si s'ultrapassa el senyal de sortida o un piquet, es comunica immediatament al centre de comandament i s'actua segons les seves instruccions (112.3)", "Si a més es taloneja accidentalment un canvi d'agulles, és prohibit retrocedir: parada immediata, informar el centre i seguir instruccions (112.4); en cas de perill imminent, retrocedir immediatament i comunicar-ho (112.5)", "Si el tren no lliura per cua el piquet o el tram de detecció, avança fins a estacionar correctament sense informar (112.6)", "Ultrapassament del punt de referència amb viatgers: portes automàtiques, no s'accionen i es retrocedeix canviant de cabina fins al punt; portes manuals, no es retrocedeix ni s'avança fins que ho indiquin els agents de les portes (112.7)"]}, {"title": "Itineraris: establiment, alteracions i condicions particulars", "text": "Explica com s'estableixen i s'anul·len els itineraris dels trens, què han de fer els agents de conducció davant alteracions del servei previst i quines condicions particulars s'apliquen quan acaba la jornada o no hi ha agents de circulació.", "ref": "Art. 119 a 121 (pàg. 63 a 64)", "pts": ["Els itineraris corresponen als recorreguts dels trens i asseguren el govern sobre els senyals o els sistemes de senyalització en cabina (art. 119.1)", "S'estableixen i s'anul·len des dels pupitres de comandament central, des dels quadres de comandament local o per detecció automàtica dels propis trens (art. 119.2)", "Un itinerari establert només s'anul·la per motius, provadament justificats, de seguretat o d'afectació al servei, i si és possible es comunica als agents de conducció amb prou antelació (art. 119.3)", "Les alteracions de la programació es comuniquen als agents de conducció en trajectes de via única o sempre que calgui per facilitar o agilitzar el servei (art. 120.1)", "Els agents de conducció no poden fer cap moviment que no s'ajusti al programat o a les instruccions rebudes; si no hi ha comunicació amb el centre de comandament, no es pot fer cap alteració d'allò previst en els itineraris de servei (art. 120.2 i 120.3)", "Al final de la jornada o en deixar el lloc, els agents de circulació, amb la circulació regulada des del quadre de comandament local, disposen els canvis per la via directa o cap a les habituals de pas, tret d'instruccions expresses del centre de comandament (art. 121.1)", "Confirmen als Centres de comandament l'orientació i disposició dels canvis, deixen les línies de comunicació disposades per a les col·laterals i impedeixen l'accés i la manipulació del quadre de comandament (art. 121.2)", "En enclavaments amb itineraris habituals automàtics la manca d'agents de circulació no és una incidència; si cal establir-los manualment des de les estacions, els Centres autoritzen la marxa segons el blocatge manual central o altres mesures previstes (art. 121.3 i 121.4)"]}, {"title": "Maniobres amb senyalització manual i agents que hi intervenen", "text": "Descriu com es transmeten les ordres en les maniobres amb senyalització manual, com es determina el sentit del moviment (empènyer o tirar) i quines funcions tenen els agents de circulació, de maniobres i de conducció.", "ref": "Art. 166 i 167 (pàg. 83)", "pts": ["Els senyals de formació i segregació es transmeten, si és possible, pels mitjans de comunicació disponibles o directament entre els agents (art. 166.1)", "Només quan no hi ha mitjans de comunicació o no estan assegurats es fan servir senyals manuals (fanal i xiulet), des d'un lloc ben visible i audible per a l'agent de conducció (art. 166.2)", "Si l'element motor és al darrere de la composició, l'ordre és empènyer; si és al davant, tirar (art. 166.4)", "Si l'element motor és intercalat o sol, empènyer equival a acostar-se a l'agent de maniobres i tirar a allunyar-se'n (art. 166.5)", "En els automotors determina el sentit la posició de l'agent de conducció: gairebé sempre tirar, i empènyer en cas d'avaria quan es condueix des de la cabina de cua (art. 166.6)", "Els agents de conducció repeteixen amb el xiulet el codi acústic dels senyals rebuts, excepte en la prova del fre (art. 166.7)", "Els agents de circulació dirigeixen les maniobres i decideixen formació, diferit, inici, durada i finalització o suspensió, i poden delegar funcions en agents de maniobres qualificats; els agents de conducció fan els moviments ordenats per senyalització de maniobres o radiotelèfon portàtil (art. 167.1 i 167.3)", "Els agents que executen les maniobres són responsables de la correcta manipulació dels elements i aparells i de la presentació dels senyals perquè els moviments siguin ràpids i segurs (art. 167.2)"]}], "sec": {"1": "Títol 1 · Normes generals", "2": "Títol 2 · Senyalització", "3": "Títol 3 · Regulació del trànsit i blocatges", "4": "Títol 4 · Servei dels trens", "5": "Títol 5 · Maniobres", "6": "Títol 6 · Treballs a les instal·lacions"}};
+  var Q = D.q, DEV = D.dev, SEC = D.sec, PASS = 7, PEN = 0.25, LET = ["A", "B", "C", "D"];
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt !== undefined) e.textContent = txt; return e; }
+  function fmt(n, d) { d = d === undefined ? 2 : d; return n.toLocaleString("ca-ES", { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  var S = { mode: "exam", order: [], ans: {}, i: 0, confirm: false, done: false, filter: "fail" };
+
+  function show(name) {
+    ["home", "quiz", "result", "dev"].forEach(function (v) { $("v-" + v).hidden = v !== name; });
+    var isDev = name === "dev";
+    $("tab-test").setAttribute("aria-selected", String(!isDev));
+    $("tab-dev").setAttribute("aria-selected", String(isDev));
+    window.scrollTo(0, 0);
+  }
+  function home() {
+    $("btn-resume").hidden = !(S.order.length && !S.done);
+    show("home");
+  }
+
+  /* ---------- Inici ---------- */
+  var sel = $("sel-bloc");
+  var o0 = el("option", "", "Tots els títols (" + Q.length + " preguntes)"); o0.value = "0"; sel.append(o0);
+  Object.keys(SEC).forEach(function (k) {
+    var n = Q.filter(function (q) { return q.sec === +k; }).length;
+    var o = el("option", "", SEC[k] + " (" + n + ")"); o.value = k; sel.append(o);
+  });
+  function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function start(ids, mode, doShuffle) {
+    S.mode = mode; S.order = doShuffle ? shuffle(ids.slice()) : ids.slice(); S.ans = {}; S.i = 0; S.confirm = false; S.done = false;
+    show("quiz"); renderQ();
+  }
+  $("btn-start").onclick = function () {
+    var mode = document.querySelector("input[name=mode]:checked").value;
+    var b = +sel.value;
+    var ids = []; Q.forEach(function (q, i) { if (!b || q.sec === b) ids.push(i); });
+    start(ids, mode, $("chk-shuffle").checked);
+  };
+  $("btn-resume").onclick = function () { show("quiz"); renderQ(); };
+
+  /* ---------- Test ---------- */
+  function whereBox(q) {
+    var d = el("div", "where");
+    var b = el("b", "", "On trobar-ho: ");
+    d.append(b, document.createTextNode(q.loc + "."));
+    return d;
+  }
+  function renderQ() {
+    var id = S.order[S.i], q = Q[id], total = S.order.length, given = S.ans[id];
+    $("q-count").textContent = "Pregunta " + (S.i + 1) + " de " + total;
+    $("q-sec").textContent = SEC[q.sec].split(" · ")[0];
+    $("q-bar").style.width = (Object.keys(S.ans).length / total * 100) + "%";
+    $("q-text").textContent = q.text;
+    var locked = S.mode === "study" && given !== undefined;
+    var box = $("q-opts"); box.replaceChildren();
+    q.opts.forEach(function (o, k) {
+      var b = el("button", "opt"); b.type = "button"; b.dataset.k = k;
+      b.append(el("span", "opt-l", LET[k]), el("span", "opt-t", o));
+      if (given === k) b.classList.add("sel");
+      if (locked) { if (k === q.ans) b.classList.add("ok"); else if (given === k) b.classList.add("bad"); b.disabled = true; }
+      box.append(b);
+    });
+    var fb = $("q-fb"); fb.replaceChildren(); fb.hidden = !locked;
+    if (locked) {
+      var good = given === q.ans;
+      fb.className = "fb " + (good ? "good" : "wrong");
+      fb.append(el("b", "", good ? "Correcte" : "Incorrecte. La resposta correcta és la " + LET[q.ans] + "."));
+      fb.append(el("p", "", q.expl));
+      fb.append(whereBox(q));
+    }
+    var grid = $("navgrid"); grid.replaceChildren();
+    S.order.forEach(function (qid, idx) {
+      var b = el("button", "nav-n", String(idx + 1)); b.type = "button"; b.dataset.i = idx;
+      b.setAttribute("aria-label", "Anar a la pregunta " + (idx + 1));
+      var a = S.ans[qid];
+      if (a !== undefined) {
+        if (S.mode === "study") b.classList.add(a === Q[qid].ans ? "ok" : "bad"); else b.classList.add("done");
+      }
+      if (idx === S.i) b.classList.add("cur");
+      grid.append(b);
+    });
+    $("btn-prev").disabled = S.i === 0;
+    $("btn-next").disabled = S.i === total - 1;
+    var un = total - Object.keys(S.ans).length;
+    $("confirm").hidden = !S.confirm;
+    if (S.confirm) $("confirm-t").textContent = "Tens " + un + (un === 1 ? " pregunta sense contestar" : " preguntes sense contestar") + ". Les que quedin en blanc valen 0 punts.";
+  }
+  $("q-opts").addEventListener("click", function (e) {
+    var b = e.target.closest(".opt"); if (!b || b.disabled) return;
+    var id = S.order[S.i], k = +b.dataset.k;
+    if (S.mode === "exam" && S.ans[id] === k) delete S.ans[id]; else S.ans[id] = k;
+    S.confirm = false; renderQ();
+  });
+  $("navgrid").addEventListener("click", function (e) {
+    var b = e.target.closest(".nav-n"); if (!b) return; S.i = +b.dataset.i; S.confirm = false; renderQ(); window.scrollTo(0, 0);
+  });
+  $("btn-prev").onclick = function () { if (S.i > 0) { S.i--; S.confirm = false; renderQ(); window.scrollTo(0, 0); } };
+  $("btn-next").onclick = function () { if (S.i < S.order.length - 1) { S.i++; S.confirm = false; renderQ(); window.scrollTo(0, 0); } };
+  $("btn-home").onclick = home;
+  $("btn-back").onclick = function () { S.confirm = false; renderQ(); };
+  $("btn-finish").onclick = function () {
+    var un = S.order.length - Object.keys(S.ans).length;
+    if (un > 0 && !S.confirm) { S.confirm = true; renderQ(); $("confirm").scrollIntoView({ block: "center" }); return; }
+    finish();
+  };
+  $("btn-confirm").onclick = finish;
+
+  /* ---------- Resultat ---------- */
+  function compute() {
+    var r = { ok: 0, bad: 0, blank: 0, per: {}, N: S.order.length };
+    S.order.forEach(function (id) {
+      var q = Q[id], a = S.ans[id], p = r.per[q.sec] || (r.per[q.sec] = { ok: 0, n: 0 });
+      p.n++;
+      if (a === undefined) r.blank++; else if (a === q.ans) { r.ok++; p.ok++; } else r.bad++;
+    });
+    r.net = Math.max(0, r.ok - PEN * r.bad);
+    r.grade = r.net / r.N * 10;
+    r.pct = r.ok / r.N * 100;
+    r.need = PASS / 10 * r.N;
+    return r;
+  }
+  function finish() {
+    S.done = true; S.confirm = false; S.filter = "fail";
+    var r = compute();
+    var card = $("res-card"); card.replaceChildren();
+    var pass = r.grade >= PASS;
+    var g = el("div", "grade", fmt(r.grade)); g.append(el("small", "", " / 10"));
+    card.append(el("div", "label", S.mode === "exam" ? "Resultat de l'examen" : "Resultat del mode estudi"), g);
+    var pill = el("span", "pill " + (pass ? "pass" : "fail"), pass ? "Apte · mínim 7" : "No apte · cal un 7");
+    var pr = el("div", "row"); pr.append(pill);
+    card.append(pr);
+    var msg = pass
+      ? "Has superat el 7 amb " + fmt(r.net) + " punts nets de " + r.N + "."
+      : "Tens " + fmt(r.net) + " punts nets de " + r.N + ". Per arribar al 7 en calen " + fmt(r.need, 1) + ". Repassa els errors de sota i torna-ho a provar.";
+    card.append(el("p", "note", msg));
+    var st = el("div", "stats");
+    [["Encerts", String(r.ok)], ["Errors", String(r.bad)], ["En blanc", String(r.blank)], ["% d'encert", fmt(r.pct, 0) + " %"], ["Punts nets", fmt(r.net)]].forEach(function (x) {
+      var s = el("div", "stat"); s.append(el("span", "label", x[0]), el("b", "", x[1])); st.append(s);
+    });
+    card.append(st);
+    card.append(el("p", "note", "Nota = (encerts − 0,25 × errors) ÷ " + r.N + " × 10"));
+    var bars = $("res-bars"); bars.replaceChildren();
+    Object.keys(r.per).sort().forEach(function (k) {
+      var p = r.per[k], pc = p.ok / p.n * 100;
+      var w = el("div"), h = el("div", "bar-h");
+      h.append(el("span", "", SEC[k].split(" · ")[1] || SEC[k]), el("b", "", p.ok + " / " + p.n));
+      var b = el("div", "bar " + (pc < 50 ? "low" : pc < 75 ? "mid" : "")); var i = el("i"); i.style.width = pc + "%"; b.append(i);
+      w.append(h, b); bars.append(w);
+    });
+    $("btn-retry").hidden = (r.bad + r.blank) === 0;
+    renderReview();
+    show("result");
+  }
+  function renderReview() {
+    var list = $("res-list"); list.replaceChildren();
+    document.querySelectorAll("#res-filter .chip").forEach(function (c) { c.setAttribute("aria-pressed", String(c.dataset.f === S.filter)); });
+    var shown = 0;
+    S.order.forEach(function (id, idx) {
+      var q = Q[id], a = S.ans[id];
+      var st = a === undefined ? "blank" : a === q.ans ? "ok" : "bad";
+      if (S.filter === "fail" && st === "ok") return;
+      if (S.filter === "ok" && st !== "ok") return;
+      shown++;
+      var it = el("article", "rev-item" + (st === "ok" ? " okk" : st === "blank" ? " blk" : ""));
+      var tag = el("div", "tag", (idx + 1) + ". " + (st === "ok" ? "Correcta" : st === "blank" ? "Sense resposta" : "Error"));
+      tag.style.color = st === "ok" ? "var(--ok)" : st === "blank" ? "var(--warn)" : "var(--bad)";
+      it.append(tag, el("div", "qt", q.text));
+      if (st === "bad") { var y = el("div", "ans"); y.append(el("span", "no", "La teva resposta: "), document.createTextNode(LET[a] + ") " + q.opts[a])); it.append(y); }
+      var c = el("div", "ans"); c.append(el("span", "yes", "Resposta correcta: "), document.createTextNode(LET[q.ans] + ") " + q.opts[q.ans])); it.append(c);
+      it.append(el("p", "ans", q.expl), whereBox(q));
+      list.append(it);
+    });
+    if (!shown) list.append(el("div", "card", S.filter === "fail" ? "No tens cap error ni cap pregunta en blanc. Molt bé." : "No hi ha preguntes en aquest filtre."));
+  }
+  $("res-filter").addEventListener("click", function (e) { var c = e.target.closest(".chip"); if (!c) return; S.filter = c.dataset.f; renderReview(); });
+  $("btn-retry").onclick = function () {
+    var ids = S.order.filter(function (id) { return S.ans[id] !== Q[id].ans; });
+    start(ids, "study", true);
+  };
+  $("btn-new").onclick = function () { S.order = []; S.done = false; home(); };
+
+  /* ---------- Desenvolupament ---------- */
+  var dl = $("dev-list");
+  DEV.forEach(function (d, i) {
+    var c = el("section", "card stack");
+    c.append(el("div", "label", "Pregunta " + (i + 1) + " · 10 punts"), el("h3", "", d.title), el("p", "", d.text));
+    var ta = el("textarea"); ta.id = "dev-ta-" + i; ta.placeholder = "Escriu aquí la teva resposta…"; ta.setAttribute("aria-label", "Resposta a la pregunta " + (i + 1));
+    var btn = el("button", "btn ghost", "Mostra la resposta model"); btn.type = "button";
+    var model = el("div", "model"); model.hidden = true;
+    model.append(el("b", "", "Punts clau"));
+    var ul = el("ul"); d.pts.forEach(function (p) { ul.append(el("li", "", p)); }); model.append(ul);
+    model.append(el("p", "dev-ref", "On trobar-ho: " + d.ref + "."));
+    btn.onclick = function () { model.hidden = !model.hidden; btn.textContent = model.hidden ? "Mostra la resposta model" : "Amaga la resposta model"; };
+    c.append(ta, btn, model); dl.append(c);
+  });
+
+  $("tab-test").onclick = home;
+  $("tab-dev").onclick = function () { show("dev"); };
+  home();
+})();
+</script>
